@@ -69,14 +69,14 @@ object FastTest : BuildType({
     steps {
         maven {
             name = "Run FastTest"
-            goals = "Test compile"
+            goals = "clean test"
             runnerArgs = "-Dmaven.test.failure.ignore=true -Dtest=*.unit.*Test"
         }
     }
 })
 
 object IntegrationTest : BuildType({
-    name = "IndegrationTest"
+    name = "IntegrationTest"
 
     vcs {
         root(DslContext.settingsRoot)
@@ -84,8 +84,8 @@ object IntegrationTest : BuildType({
 
     steps {
         maven {
-            name = "Run IndegrationTest"
-            goals = "Test compile"
+            name = "Run Integration Test"
+            goals = "clean test"
             runnerArgs = "-Dmaven.test.failure.ignore=true -Dtest=*.integration.*Test"
         }
     }
