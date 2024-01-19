@@ -31,6 +31,9 @@ version = "2023.11"
 
 project {
 
+    buildType(Build)
+    buildType(Package)
+
     sequential {
         buildType(Build)
         buildType(Package)
@@ -70,11 +73,6 @@ object Package : BuildType({
 
     triggers {
         vcs {
-            quietPeriodMode = VcsTrigger.QuietPeriodMode.USE_CUSTOM
-            quietPeriod = 30
-            perCheckinTriggering = true
-            groupCheckinsByCommitter = true
-            enableQueueOptimization = false
         }
     }
 
