@@ -2,7 +2,6 @@ import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.buildFeatures.freeDiskSpace
 import jetbrains.buildServer.configs.kotlin.buildFeatures.perfmon
 import jetbrains.buildServer.configs.kotlin.buildSteps.maven
-import jetbrains.buildServer.configs.kotlin.triggers.VcsTrigger
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
 
 /*
@@ -36,6 +35,10 @@ project {
 
     sequential {
         buildType(Build)
+        parallel {
+            buildType(FastTest)
+            buildType(IntegrationTest)
+        }
         buildType(Package)
     }
 }
@@ -55,6 +58,39 @@ object Build : BuildType({
         }
     }
 })
+
+object FastTest : BuildType({
+    name = "FastTest"
+
+    vcs {
+        root(DslContext.settingsRoot)
+    }
+
+    steps {
+        maven {
+            name = "Run FastTest"
+            goals = "Test compile"
+            runnerArgs = "-Dmaven.test.failure.ignore=true -Dtest=*.unit.*Test"
+        }
+    }
+})
+
+object IntegrationTest : BuildType({
+    name = "IndegrationTest"
+
+    vcs {
+        root(DslContext.settingsRoot)
+    }
+
+    steps {
+        maven {
+            name = "Run IndegrationTest"
+            goals = "Test compile"
+            runnerArgs = "-Dmaven.test.failure.ignore=true -Dtest=*.integration.*Test"
+        }
+    }
+})
+
 
 object Package : BuildType({
     name = "Package"
