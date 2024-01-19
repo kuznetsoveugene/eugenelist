@@ -1,6 +1,8 @@
 import jetbrains.buildServer.configs.kotlin.*
+import jetbrains.buildServer.configs.kotlin.buildFeatures.freeDiskSpace
 import jetbrains.buildServer.configs.kotlin.buildFeatures.perfmon
 import jetbrains.buildServer.configs.kotlin.buildSteps.maven
+import jetbrains.buildServer.configs.kotlin.triggers.VcsTrigger
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
 
 /*
@@ -50,6 +52,18 @@ object Build : BuildType({
 
     triggers {
         vcs {
+            quietPeriodMode = VcsTrigger.QuietPeriodMode.USE_CUSTOM
+            quietPeriod = 30
+            perCheckinTriggering = true
+            groupCheckinsByCommitter = true
+            enableQueueOptimization = false
+        }
+    }
+
+    features {
+        freeDiskSpace {
+            requiredSpace = "10gb"
+            failBuild = true
         }
     }
 
