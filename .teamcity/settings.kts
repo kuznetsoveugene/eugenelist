@@ -30,13 +30,16 @@ version = "2023.11"
 
 project {
 
+    // Need to register all the projects here
     buildType(Build)
+    buildType(FastTest)
+    buildType(IntegrationTest)
     buildType(Package)
 
     sequential {
         buildType(Build)
         parallel {
-            buildType(FastTest)
+            buildType(FastTest) // Then I can specify an order of building here
             buildType(IntegrationTest)
         }
         buildType(Package)
@@ -60,7 +63,7 @@ object Build : BuildType({
 })
 
 object FastTest : BuildType({
-    name = "FastTest"
+    name = "Fast Test"
 
     vcs {
         root(DslContext.settingsRoot)
@@ -68,7 +71,6 @@ object FastTest : BuildType({
 
     steps {
         maven {
-            name = "Run FastTest"
             goals = "clean test"
             runnerArgs = "-Dmaven.test.failure.ignore=true -Dtest=*.unit.*Test"
         }
@@ -76,7 +78,7 @@ object FastTest : BuildType({
 })
 
 object IntegrationTest : BuildType({
-    name = "IntegrationTest"
+    name = "Integration Test"
 
     vcs {
         root(DslContext.settingsRoot)
