@@ -1,0 +1,48 @@
+GET http://localhost:8080/todos
+
+### Get All Users
+GET http://localhost:8080/users
+
+###
+
+POST http://localhost:8080/todos
+Content-Type: application/json
+User-Agent: Firefox 145
+
+{
+  "name": "{{$random.email}}",
+  "done": false
+}
+
+###
+
+GET {{host}}/todos?myParam={{my_cookie}}
+
+
+###
+
+GET http://localhost:8080/todos
+
+> {%
+
+ client.test("GET all Todos returns 200", function() {
+    client.assert(response.status === 200, "Expected 200 but was: " + response.status);
+ });
+
+ client.test("Todo List Contains a specific item", function() {
+     client.assert(response.body[0].name.indexOf("never") != -1, "never done should be there");
+ });
+
+ client.global.set("my_cookie", "1283978123")
+
+%}
+
+###
+
+< {%
+    const timestamp = Math.floor(new Date().getTime() / 1000);
+    request.variables.set("timestamp", timestamp)
+    request.variables.set("signature", crypto.hmac.sha256().withTextSecret("my secret api key").updateWithText("timestamp=" + timestamp).digest().toHex());
+ %}
+GET http://localhost:8080/todos?timestamp={{timestamp}}&signature={{signature}}
+Accept: application/json

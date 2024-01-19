@@ -1,0 +1,55 @@
+
+curl -f -L -o ijhttp.zip "https://jb.gg/ijhttp/latest"
+
+
+### Insecure Show terminal run /Interactive CLI different
+
+ijhttp C:\dev\anewtodolist\run.http
+
+### Insecure Different logging levels
+
+ijhttp C:\dev\anewtodolist\run.http -L VERBOSE
+
+
+### Insecure Env-file and env
+
+ijhttp C:\dev\anewtodolist\run.http -L VERBOSE -e dev
+
+ijhttp C:\dev\anewtodolist\run.http -L VERBOSE -e dev -v C:\dev\anewtodolist\http-client.env.json
+
+
+
+
+### Insecure
+
+ijhttp C:\dev\anewtodolist\run.http -L VERBOSE -e dev -v C:\dev\anewtodolist\http-client.env.json --insecure
+
+
+### Reports
+
+ijhttp C:\dev\anewtodolist\run.http -L VERBOSE -e dev -v C:\dev\anewtodolist\http-client.env.json --insecure --report
+
+###
+
+docker run --rm -v $PWD:/workdir jetbrains/intellij-http-client run.http
+
+
+docker run --add-host=host.docker.internal:host-gateway --rm -v $PWD:/workdir jetbrains/intellij-http-client -e dev -v http-client.env.json --report requests.http
+
+docker run --add-host=host.docker.internal:host-gateway --rm -v $PWD:/workdir jetbrains/intellij-http-client -e dev -v http-client.env.json -D --report requests.http
+docker run --add-host=host.docker.internal:host-gateway --rm -v $PWD:/workdir jetbrains/intellij-http-client -D -e dev -v http-client.env.json --report requests.http
+
+### Docker mode
+
+FULL SCRIPT
+
+chmod +x mvnw
+./mvnw spring-boot:run &
+sleep 11s
+
+## host.docker.internal
+
+docker run --add-host=host.docker.internal:host-gateway --rm -v $PWD:/workdir jetbrains/intellij-http-client -e dev -v http-client.env.json -D --report run.http
+
+
+https://blog.jetbrains.com/idea/2022/12/http-client-cli-run-requests-and-tests-on-ci/

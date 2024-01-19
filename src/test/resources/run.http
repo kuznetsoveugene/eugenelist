@@ -1,0 +1,67 @@
+GET http://localhost:8080/todos
+
+### a name...
+
+GET http://localhost:8080/users
+
+###
+
+POST http://localhost:8080/todos
+Content-Type: application/json
+
+{
+  "name": "need to go shopping",
+  "done": false
+}
+
+###
+
+POST http://localhost:8080/todos
+Content-Type: application/json
+
+{
+  "name": "{{$random.alphanumeric(10)}}",
+  "done": false
+}
+
+
+###
+
+GET {{host}}/todos
+
+### https://youtrack.jetbrains.com/issue/IDEA-300163/HTTP-Client-add-new-dynamic-variables
+
+
+
+### HTTP Client Testing
+
+# Check response status is 200
+GET http://localhost:8080/todos
+
+> {%
+  client.test("Todo Request is 200", function() {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+
+  client.test("Todo Contains Specific Item", function() {
+      client.assert(response.body[0].name.indexOf("never") !== -1, "Todo list does not contain item");
+  });
+
+  client.global.set("my_cookie", response.headers.valuesOf("Set-Cookie")[0]);
+%}
+
+### Authorization
+
+< {%
+    const timestamp = Math.floor(new Date().getTime() / 1000);
+    request.variables.set("timestamp", timestamp)
+    request.variables.set("signature", crypto.hmac.sha256().withTextSecret("my secret api key").updateWithText("timestamp=" + timestamp).digest().toHex());
+%}
+GET http://localhost:8080/todos?timestamp={{timestamp}}&signature={{signature}}
+Accept: application/json
+
+### CURL
+
+### WEBSOCKET/GRCP/GRAPHQL
+
+### curl -f -L -o ijhttp.zip "https://jb.gg/ijhttp/latest"
