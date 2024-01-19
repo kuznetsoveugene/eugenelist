@@ -31,7 +31,10 @@ version = "2023.11"
 
 project {
 
-    buildType(Build)
+    sequential {
+        buildType(Build)
+        buildType(Package)
+    }
 }
 
 object Build : BuildType({
@@ -44,7 +47,22 @@ object Build : BuildType({
     steps {
         maven {
             name = "Basic Build"
-            id = "Maven2"
+            goals = "clean compile"
+            runnerArgs = "-Dmaven.test.failure.ignore=true"
+        }
+    }
+})
+
+object Package : BuildType({
+    name = "Package"
+
+    vcs {
+        root(DslContext.settingsRoot)
+    }
+
+    steps {
+        maven {
+            name = "Package Project"
             goals = "clean package"
             runnerArgs = "-Dmaven.test.failure.ignore=true"
         }
