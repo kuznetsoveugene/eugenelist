@@ -39,7 +39,6 @@ project {
 
         steps {
             maven {
-                this.name = name
                 this.goals = goals
                 this.runnerArgs = runnerArgs
             }
