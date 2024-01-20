@@ -30,6 +30,21 @@ version = "2023.11"
 
 project {
 
+    class Maven(name: String, goals: String, runnerArgs: String? = null) : BuildType({
+        this.name = name
+
+        vcs {
+            root(DslContext.settingsRoot)
+        }
+
+        steps {
+            maven {
+                this.name = name
+                this.goals = goals
+                this.runnerArgs = runnerArgs
+            }
+        }
+    })
 
     var bts = sequential {
         buildType(Maven("Build", "clean compile"))
@@ -58,20 +73,4 @@ project {
         perfmon {
         }
     }
-
-    class Maven(name: String, goals: String, runnerArgs: String? = null) : BuildType({
-        this.name = name
-
-        vcs {
-            root(DslContext.settingsRoot)
-        }
-
-        steps {
-            maven {
-                this.name = name
-                this.goals = goals
-                this.runnerArgs = runnerArgs
-            }
-        }
-    })
 }
