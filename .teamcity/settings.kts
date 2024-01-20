@@ -59,8 +59,7 @@ project {
     bts.forEach { buildType(it) }
 
     // Package add specifics triggers for package step
-    bts.last().triggers
-    {
+    bts.last().triggers {
 //        why only here we need a VCS trigger
         vcs {
         }
