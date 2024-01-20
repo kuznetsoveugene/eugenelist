@@ -30,99 +30,48 @@ version = "2023.11"
 
 project {
 
-    // Need to register all the projects here
-    buildType(Build)
-    buildType(FastTest)
-    buildType(IntegrationTest)
-    buildType(Package)
 
-    sequential {
-        buildType(Build)
+    var bts = sequential {
+        buildType(Maven("Build", "clean compile"))
         parallel {
-            buildType(FastTest) // Then I can specify an order of building here
-            buildType(IntegrationTest)
+            buildType(Maven("Fast Test", "clean test", "-Dmaven.test.failure.ignore=true -Dtest=*.unit.*Test"))
+            buildType(Maven("Integration Test", "clean test", "-Dmaven.test.failure.ignore=true -Dtest=*.integration.*Test"))
         }
-        buildType(Package)
-    }
-}
-
-object Build : BuildType({
-    name = "Build"
-
-    vcs {
-        root(DslContext.settingsRoot)
-    }
-
-    steps {
-        maven {
-            name = "Basic Build"
-            goals = "clean compile"
-            runnerArgs = "-Dmaven.test.failure.ignore=true"
-        }
-    }
-})
-
-object FastTest : BuildType({
-    name = "Fast Test"
-
-    vcs {
-        root(DslContext.settingsRoot)
-    }
-
-    steps {
-        maven {
-            goals = "clean test"
-            runnerArgs = "-Dmaven.test.failure.ignore=true -Dtest=*.unit.*Test"
-        }
-    }
-})
-
-object IntegrationTest : BuildType({
-    name = "Integration Test"
-
-    vcs {
-        root(DslContext.settingsRoot)
-    }
-
-    steps {
-        maven {
-            name = "Run Integration Test"
-            goals = "clean test"
-            runnerArgs = "-Dmaven.test.failure.ignore=true -Dtest=*.integration.*Test"
-        }
-    }
-})
+        buildType(Maven("Package", "clean package", "-Dmaven.test.failure.ignore=true"))
+    }.buildTypes()
 
 
-object Package : BuildType({
-    name = "Package"
+    bts.forEach { buildType(it) }
 
-    vcs {
-        root(DslContext.settingsRoot)
-    }
-
-    steps {
-        maven {
-            name = "Package Project"
-            goals = "clean package"
-            runnerArgs = "-Dmaven.test.failure.ignore=true"
-        }
-    }
-
-    triggers {
+    // Package add specifics triggers for package step
+    bts.last().triggers
+    {
+//        why only here we need a VCS trigger
         vcs {
         }
     }
-
-    features {
+    bts.last().features {
         freeDiskSpace {
             requiredSpace = "10gb"
             failBuild = true
         }
-    }
-
-    features {
         perfmon {
         }
     }
-})
+
+    class Maven(name: String, goals: String, runnerArgs: String? = null) : BuildType({
+        this.name = "Build"
+
+        vcs {
+            root(DslContext.settingsRoot)
+        }
+
+        steps {
+            maven {
+                this.name = name
+                this.goals = goals
+                this.runnerArgs = runnerArgs
+            }
+        }
+    })
+}
