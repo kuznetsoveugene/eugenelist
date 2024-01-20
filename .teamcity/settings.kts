@@ -31,7 +31,6 @@ version = "2023.11"
 project {
 
     class Maven(name: String, goals: String, runnerArgs: String? = null) : BuildType({
-        this.name = name
 
         vcs {
             root(DslContext.settingsRoot)
@@ -39,6 +38,7 @@ project {
 
         steps {
             maven {
+                this.name = name
                 this.goals = goals
                 this.runnerArgs = runnerArgs
             }
