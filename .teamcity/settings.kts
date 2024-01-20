@@ -60,7 +60,7 @@ project {
     }
 
     class Maven(name: String, goals: String, runnerArgs: String? = null) : BuildType({
-        this.name = "Build"
+        this.name = name
 
         vcs {
             root(DslContext.settingsRoot)
