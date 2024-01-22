@@ -2,6 +2,7 @@ import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.buildFeatures.freeDiskSpace
 import jetbrains.buildServer.configs.kotlin.buildFeatures.perfmon
 import jetbrains.buildServer.configs.kotlin.buildSteps.maven
+import jetbrains.buildServer.configs.kotlin.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
 
 /*
@@ -41,6 +42,16 @@ project {
             maven {
                 this.goals = goals
                 this.runnerArgs = runnerArgs
+            }
+            script {
+                id = "set-custom-green-text"
+                scriptContent = """echo "##teamcity[buildStatus text='Eugene Success in executing the step']""""
+            }
+
+            script {
+                id = "set-custom-red-text"
+                executionMode = BuildStep.ExecutionMode.RUN_ONLY_ON_FAILURE
+                scriptContent = """echo "##teamcity[buildStatus text='Eugene Build Failed in executing the step']""""
             }
         }
     })
