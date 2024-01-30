@@ -31,7 +31,7 @@ changeBuildType(RelativeId("Build")) {
                 name = "AddStepCustomRunner"
                 id = "AddStepCustomRunner"
                 type = "Eugene RunType"
-                param("Eugene Test Message", "Show up new message!")
+                param("Eugene Test Message", "Not my message")
             }
         }
     }
